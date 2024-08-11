@@ -32,7 +32,7 @@ header {
   width: 300px;
   min-width: 300px;
   padding: 20px;
-  max-height: 2200px;
+  max-height: 5000px;
 }
 .as {
   text-align: center;
@@ -105,4 +105,10 @@ img {
   max-width: 250px;
   width: 100%;
   height: 250px;
+}
+.abv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 }

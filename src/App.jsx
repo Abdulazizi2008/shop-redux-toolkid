@@ -1,28 +1,9 @@
-import { useState } from "react";
-
-import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Heder from "./components/Heder";
 import Aside from "./components/Aside";
 import Main from "./components/Main";
-
-// const initialState = {
-//   products: [],
-//   colors: [],
-//   brands: [],
-// };
-
-// function reducer(state, action) {
-//   switch (action.type) {
-//     case "SET_COLORS":
-//       return { ...state, colors: action.payload };
-//     case "SET_BRANDS":
-//       return { ...state, brands: action.payload };
-//     case "SET_PRODUCTS":
-//       return { ...state, products: action.payload };
-//     default:
-//       return state;
-//   }
-// }
+import Cart from "./components/Cart";
+import { useState } from "react";
 
 function App() {
   const [selectedBrand, setSelectedBrand] = useState("");
@@ -30,22 +11,32 @@ function App() {
   const [selectPrice, setSelectPrice] = useState("");
 
   return (
-    <div className="container">
-      <Heder selectPrice={selectPrice} setSelectPrice={setSelectPrice} />
-      <div className="all">
-        <Aside
-          selectedBrand={selectedBrand}
-          setSelectedBrand={setSelectedBrand}
-          selectedColor={selectedColor}
-          setSelectedColor={setSelectedColor}
-        />
-        <Main
-          selectedBrand={selectedBrand}
-          selectedColor={selectedColor}
-          selectPrice={selectPrice}
-        />
+    <Router>
+      <div className="container">
+        <Heder selectPrice={selectPrice} setSelectPrice={setSelectPrice} />
+        <div className="all">
+          <Aside
+            selectedBrand={selectedBrand}
+            setSelectedBrand={setSelectedBrand}
+            selectedColor={selectedColor}
+            setSelectedColor={setSelectedColor}
+          />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Main
+                  selectedBrand={selectedBrand}
+                  selectedColor={selectedColor}
+                  selectPrice={selectPrice}
+                />
+              }
+            />
+            <Route path="/cart" element={<Cart />} />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </Router>
   );
 }
 

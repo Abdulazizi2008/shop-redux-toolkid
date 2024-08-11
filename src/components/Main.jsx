@@ -1,10 +1,13 @@
+// src/components/Main.jsx
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, saveProducts } from "../store/productSlice";
+import { addItem } from "../store/cartSlice";
 
 function Main({ selectedBrand, selectedColor, selectPrice }) {
   const dispatch = useDispatch();
   const { products, loading } = useSelector((store) => store.products);
+
   useEffect(() => {
     async function fetchProducts() {
       dispatch(setLoading(true));
@@ -44,6 +47,11 @@ function Main({ selectedBrand, selectedColor, selectPrice }) {
     return 0;
   });
 
+  const handleAddToCart = (product) => {
+    dispatch(addItem(product));
+    alert("Added to cart");
+  };
+
   return (
     <div className="main">
       <div className="as">MAIN</div>
@@ -63,22 +71,36 @@ function Main({ selectedBrand, selectedColor, selectPrice }) {
                 paddingTop: "10px",
               }}
             >
-              {product.color_options.map((color, index) => {
-                return (
-                  <li
-                    key={index}
-                    style={{
-                      backgroundColor: color,
-                      width: "20px",
-                      height: "20px",
-                      border: "1px solid",
-                      borderRadius: "50%",
-                    }}
-                  ></li>
-                );
-              })}
+              {product.color_options.map((color, index) => (
+                <li
+                  key={index}
+                  style={{
+                    backgroundColor: color,
+                    width: "20px",
+                    height: "20px",
+                    border: "1px solid",
+                    borderRadius: "50%",
+                  }}
+                ></li>
+              ))}
             </ul>
             <p>{product.price}</p>
+            <button
+              onClick={() => handleAddToCart(product)}
+              style={{
+                backgroundColor: "#4CAF50",
+                color: "white",
+                padding: "10px 20px",
+                borderRadius: "5px",
+                cursor: "pointer",
+                outline: "none",
+                textTransform: "uppercase",
+                border: "none",
+                marginTop: "10px",
+              }}
+            >
+              Add to Cart
+            </button>
           </li>
         ))}
       </ul>
