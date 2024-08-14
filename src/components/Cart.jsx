@@ -1,9 +1,52 @@
 import { useSelector, useDispatch } from "react-redux";
-import { clearCart } from "../store/cartSlice";
+import { clearCart, deleteItem } from "../store/cartSlice";
+import { useState, useEffect } from "react";
 
 function Cart() {
   const { items } = useSelector((store) => store.cart);
   const dispatch = useDispatch();
+  const [counts, setCounts] = useState(() => {
+    const savedCounts = JSON.parse(localStorage.getItem("counts")) || {};
+    return savedCounts;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("counts", JSON.stringify(counts));
+  }, [counts]);
+
+  const handleIncrement = (id) => {
+    setCounts((prevCounts) => ({
+      ...prevCounts,
+      [id]: (prevCounts[id] || 0) + 1,
+    }));
+  };
+
+  const handleDecrement = (id) => {
+    setCounts((prevCounts) => ({
+      ...prevCounts,
+      [id]: Math.max((prevCounts[id] || 0) - 1, 0),
+    }));
+  };
+
+  const handleInputChange = (id, e) => {
+    const value = Number(e.target.value);
+    setCounts((prevCounts) => ({
+      ...prevCounts,
+      [id]: value >= 0 ? value : 0,
+    }));
+  };
+
+  const handleDelete = (id) => {
+    const confirmDelete = window.confirm("Delete from cart?");
+    if (confirmDelete) {
+      dispatch(deleteItem(id));
+      setCounts((prevCounts) => {
+        const newCounts = { ...prevCounts };
+        delete newCounts[id];
+        return newCounts;
+      });
+    }
+  };
 
   return (
     <div className="cart" style={{ textAlign: "center" }}>
@@ -19,33 +62,67 @@ function Cart() {
             flexWrap: "wrap",
           }}
         >
-          {items.map((item, index) => (
-            <li key={index} className="product-card">
-              <img src={item.image_url} alt={item.name} />
-              <p>{item.name}</p>
-              <h4>{item.brand_name}</h4>
-              <ul
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  justifyContent: "center",
-                  paddingTop: "10px",
-                }}
-              >
-                {item.color_options.map((color, index) => (
-                  <li
-                    key={index}
+          {items.map((item) => (
+            <li key={item.id} className="products-card">
+              <div className="all2">
+                <div>
+                  <img src={item.image_url} alt={item.name} />
+                </div>
+                <div className="par1">
+                  <p>{item.name}</p>
+                  <h3>{item.brand_name}</h3>
+                  <ul
                     style={{
-                      backgroundColor: color,
-                      width: "20px",
-                      height: "20px",
-                      border: "1px solid",
-                      borderRadius: "50%",
+                      display: "flex",
+                      gap: "10px",
+                      justifyContent: "center",
+                      paddingTop: "20px",
                     }}
-                  ></li>
-                ))}
-              </ul>
-              <p>{item.price}</p>
+                  >
+                    {item.color_options.map((color, index) => (
+                      <li
+                        key={index}
+                        style={{
+                          backgroundColor: color,
+                          width: "20px",
+                          height: "20px",
+                          border: "1px solid",
+                          borderRadius: "50%",
+                        }}
+                      ></li>
+                    ))}
+                  </ul>
+                </div>
+                <p>${item.price}</p>
+              </div>
+              <div>
+                <div className="par2">
+                  <button onClick={() => handleIncrement(item.id)}>+</button>
+                  <input
+                    type="number"
+                    min={0}
+                    value={counts[item.id] || 0}
+                    onChange={(e) => handleInputChange(item.id, e)}
+                  />
+                  <button onClick={() => handleDecrement(item.id)}>-</button>
+                </div>
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  style={{
+                    backgroundColor: "#4CAF50",
+                    color: "white",
+                    padding: "10px 20px",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    outline: "none",
+                    textTransform: "uppercase",
+                    border: "none",
+                    marginTop: "10px",
+                  }}
+                >
+                  delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>

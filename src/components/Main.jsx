@@ -6,7 +6,7 @@ import { addItem } from "../store/cartSlice";
 function Main({ selectedBrand, selectedColor, selectPrice }) {
   const dispatch = useDispatch();
   const { products, loading } = useSelector((store) => store.products);
-
+  const { items } = useSelector((store) => store.cart);
   useEffect(() => {
     async function fetchProducts() {
       dispatch(setLoading(true));
@@ -48,7 +48,6 @@ function Main({ selectedBrand, selectedColor, selectPrice }) {
 
   const handleAddToCart = (product) => {
     dispatch(addItem(product));
-    alert("Added to cart");
   };
 
   return (
@@ -83,20 +82,11 @@ function Main({ selectedBrand, selectedColor, selectPrice }) {
                 ></li>
               ))}
             </ul>
-            <p>{product.price}</p>
+            <p>${product.price}</p>
             <button
+              className="abcd"
               onClick={() => handleAddToCart(product)}
-              style={{
-                backgroundColor: "#4CAF50",
-                color: "white",
-                padding: "10px 20px",
-                borderRadius: "5px",
-                cursor: "pointer",
-                outline: "none",
-                textTransform: "uppercase",
-                border: "none",
-                marginTop: "10px",
-              }}
+              disabled={items.some((item) => item.id === product.id)}
             >
               Add to Cart
             </button>

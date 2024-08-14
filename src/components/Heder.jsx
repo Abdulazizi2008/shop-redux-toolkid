@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 function Heder({ selectPrice, setSelectPrice }) {
+  const { items } = useSelector((store) => store.cart);
+
   return (
     <header>
       <a href="#" className="logo">
@@ -16,7 +19,11 @@ function Heder({ selectPrice, setSelectPrice }) {
           <option value="cheap">cheap</option>
           <option value="expensive">expensive</option>
         </select>
-        <Link to="/cart">🛒</Link>
+        <div className="count">
+          {items.length && <div className="len">{items.length}</div>}
+
+          <Link to="/cart">🛒</Link>
+        </div>
       </div>
     </header>
   );
